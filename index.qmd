@@ -1,0 +1,21 @@
+---
+title: "Jaron Johnstone"
+subtitle: "Actuarial Science Student"
+image: img/profile.jpeg
+about: # https://quarto.org/docs/websites/website-about.html
+  template: trestles
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com/JaronJstone
+---
+
+A little bit about me and my life.
+
+## Education
+
+University of XYZ, City \| Location \| Sept 20XX - June 20XX
+
+## Experience
+
+Workplace \| Job title \| April 20XX - present
