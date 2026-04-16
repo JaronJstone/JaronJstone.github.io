@@ -13,9 +13,14 @@ website:
     right:
       - text: Home
         href: index.qmd
+      - Portfolio.qmd
       
 format:
   html:
+    backgroundcolor: "#87CEFA"
+    fontcolor: "Black"
+    mainfont: "monospace"   
+    fontsize: 20px
     theme: [cosmo, styles.scss]
 
 
