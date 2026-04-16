@@ -1,6 +1,6 @@
 ---
 title: "Jaron Johnstone"
-subtitle: "Actuarial Science Student"
+subtitle: "Actuarial Science Student | Associate Actuary"
 image: img/profile.jpeg
 about: # https://quarto.org/docs/websites/website-about.html
   template: trestles
@@ -14,8 +14,8 @@ A little bit about me and my life.
 
 ## Education
 
-University of XYZ, City \| Location \| Sept 20XX - June 20XX
+California State University, Fullerton \| August 2022 - December 2026
 
 ## Experience
 
-Workplace \| Job title \| April 20XX - present
+Quantech Pensions \| Associate Actuary \| February 2026 - present
