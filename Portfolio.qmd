@@ -1,4 +1,4 @@
 ---
-title: "Portfolio"
+title: "Portfolio Project"
 editor: visual
 ---

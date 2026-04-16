@@ -10,8 +10,6 @@ about: # https://quarto.org/docs/websites/website-about.html
       href: https://github.com/JaronJstone
 ---
 
-Senior Mathematics Major
-
 ## Education
 
 California State University, Fullerton \| August 2022 - December 2026

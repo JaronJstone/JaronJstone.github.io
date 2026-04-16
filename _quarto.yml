@@ -3,7 +3,7 @@ project:
   output-dir: docs
   render:
       - index.qmd
-      - about.qmd
+      - Portfolio.qmd
 
 website:
   title: "Home"
