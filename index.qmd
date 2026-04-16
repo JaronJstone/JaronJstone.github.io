@@ -1,16 +1,16 @@
 ---
 title: "Jaron Johnstone"
-subtitle: "Actuarial Science Student | Associate Actuary"
+subtitle: "Actuarial Science Student"
 image: img/profile.jpeg
 about: # https://quarto.org/docs/websites/website-about.html
-  template: trestles
+  template: jolla
   links:
     - icon: github
       text: Github
       href: https://github.com/JaronJstone
 ---
 
-A little bit about me and my life.
+Senior Mathematics Major
 
 ## Education
 
