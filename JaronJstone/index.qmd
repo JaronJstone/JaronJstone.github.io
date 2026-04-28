@@ -1,0 +1,22 @@
+---
+title: "Jaron Johnstone"
+subtitle: "Actuarial Science Student"
+# `profile.jpg` photo by Jan Tinneberg on https://unsplash.com
+image: profile.jpeg
+about: # https://quarto.org/docs/websites/website-about.html
+  template: jolla
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com/JaronJstone
+---
+
+Lalalalala
+
+## Education
+
+University of XYZ, City \| Location \| Sept 20XX - June 20XX
+
+## Experience
+
+Workplace \| Job title \| April 20XX - present
