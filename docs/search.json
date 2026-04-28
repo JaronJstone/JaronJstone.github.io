@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "Portfolio.html",
+    "href": "Portfolio.html",
+    "title": "Portfolio Project",
+    "section": "",
+    "text": "print(\"hello world\")\n\n[1] \"hello world\""
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Jaron Johnstone",
@@ -19,12 +26,5 @@
     "title": "Jaron Johnstone",
     "section": "Experience",
     "text": "Experience\nQuantech Pensions | Associate Actuary | February 2026 - present"
-  },
-  {
-    "objectID": "Portfolio.html",
-    "href": "Portfolio.html",
-    "title": "Portfolio Project",
-    "section": "",
-    "text": "print(\"hello world\")\n\n[1] \"hello world\""
   }
 ]
