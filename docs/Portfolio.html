@@ -280,7 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x=</span> <span class="st">"MVR Points"</span>, <span class="at">y =</span> <span class="st">"Count"</span>,</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Red dashed line indicates maximum value fo 13 points"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Univariate MVR Points-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The distribution of vehicle record points is heavily right skewed with the majority of policyholders having 0 or 1 point, but a small number of drivers having as many as 13 points on their record(indicated by red line on the graph since it wasn’t visible). This kind of distribution is typical with risk related variables where the majority of the data is low risk while a small amount of the data is high risk.</p>
@@ -293,7 +293,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Age by Claim Status"</span>,</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Age"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="st">"Claim Filed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Bivariate Age vs Claim rate-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>First, we examine the relationship between the policyholders age and claim rate. From this layered density plot that compares ages of policy holders who have filed a claim with those how have not, we can see that drivers who have filed a claim tend to skew younger. This could be due to younger drivers having less experience behind the wheel, thus resulting in an increased accident risk.</p>
@@ -312,7 +312,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"License Revoked"</span>, <span class="at">y =</span> <span class="st">"Claim Rate"</span>) <span class="sc">+</span></span>
 <span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Bivariate Revoked Status vs Claim Rate-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>One of the strongest signals found in the data was the relationship between prior license revocation and claim rate. Drivers who have previously had their license revoked have a claim rate of 45%, which is nearly double the claim rate of 24% associated with drivers who have not had their license revoked before. This makes sense since a revoked license indicates serious driving violations, which is directly associated with higher accident risk.</p>
@@ -325,7 +325,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Claim Filed"</span>, <span class="at">y =</span> <span class="st">"MVR Points"</span>) <span class="sc">+</span></span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Bivariate Claim rate vs MVR points-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>From this graph, it is clear that policyholders who have filed a claim have a noticeably higher average motor vehicle record points than those who did not. Motor vehicle Record points accumulate from driving violations such as tickets and accidents, making it a direct measure of a person’s driving risk. This, along with revocation record, make it one of the clearest indicators of an individual’s driving risk factor.</p>
@@ -344,7 +344,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Car Use"</span>, <span class="at">y =</span> <span class="st">"Claim Rate"</span>) <span class="sc">+</span></span>
 <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Bivariate Vehicle use vs. Claim rate-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Next we examine the claim rate of commercial verse private vehicles. Here we see that commercial vehicles have a claim rate of 35%, while privately owned vehicles have a claim rate of 22%. Commercial vehicles tend to be driven more frequently and often under rougher conditions, thereby having an increased exposure to accident risk when compared to privately owned vehicles.</p>
@@ -365,7 +365,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Education level"</span>, <span class="at">y =</span> <span class="st">"Claim Rate"</span>) <span class="sc">+</span></span>
 <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Bivariate Claim rate vs Educational Level-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Examining maximum education levels of policy holders, with the exception of those who did not graduate high school, their is a clear inverse relationship between claim rate and education level. We see those with a high school education have a claim rate of 34% while those with a PhD have a claim rate of 15%. This pattern is probably due to other characteristics that are associated with achieving high levels of education, rather than the education itself.</p>
@@ -384,7 +384,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Car Type"</span>, <span class="at">y =</span> <span class="st">"Claim Rate"</span>) <span class="sc">+</span></span>
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Bivariate Claim rate vs Car Type-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Next, we examine the claim rate among different kinds of vehicles. Here, it is clear that sports cars and pickup trucks experience the highest claim rates at 34% and 32% respectively, while sedans have the lowest at 17%. Sports cars are likely associated with more aggressive/reckless driving and pickup trucks are more likely to be used as commercial vehicles, both of which are factors that are associated with an increased exposure to accident risk. On the other hand, sedans are often associated with more conservative everyday driving patterns, leading to lower accident rates.</p>
@@ -403,7 +403,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Job Class"</span>, <span class="at">y =</span> <span class="st">"Claim Rate"</span>) <span class="sc">+</span></span>
 <span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Bivariate Claim rate vs Job Class-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Finally, looking at the claim rates among job classes, we find there is quite a bit of variance between each group. This is consistent with the idea that someone’s job influences their driving patterns. For example, we see doctors have the lowest rate at 11%, while students have the highest rate at 38%. This could be due to the fact that doctors may be more risk adverse, resulting in a decreased likelihood of causing a car accident. Conversely, students are usually younger which means they have less experience driving, leading to an increased likelihood of causing a car accident.</p>
@@ -461,15 +461,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#PLot 1 - Scree plot </span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(pca_prep, <span class="at">number =</span> <span class="dv">2</span>, <span class="at">type =</span> <span class="st">"variance"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(terms <span class="sc">==</span> <span class="st">"percent variance"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> component, <span class="at">y =</span> value)) <span class="sc">+</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkgrey"</span>) <span class="sc">+</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Scree Plot - Variance Explained by each Principal Component"</span>,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Principal Component"</span>, <span class="at">y =</span> <span class="st">"Precent Variance Explained"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(pca_prep, <span class="at">number =</span> <span class="dv">2</span>, <span class="at">type =</span> <span class="st">"variance"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(terms <span class="sc">==</span> <span class="st">"percent variance"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> component, <span class="at">y =</span> value)) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkgrey"</span>) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Scree Plot - Variance Explained by each Principal Component"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Principal Component"</span>, <span class="at">y =</span> <span class="st">"Precent Variance Explained"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Scree Plot-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The Scree plot shows the percentage of variance explained by each principal component. PC1 explains 23.8% of the variance and PC2 explains 16.2% with a noticeable drop off in the following components. In the end, we select 5 principal components, which account for about 73% of the variance in the model. This cut off balances dimensionality reduction (9 variables to 5) while also keeping useful information about the data.</p>
@@ -484,21 +483,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Variable"</span>, <span class="at">y =</span> <span class="st">"Loading"</span>) <span class="sc">+</span></span>
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Loadings Plot-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The loadings plot shows how much each variable contributes to each component. In PC1, home value, bluebook value, income, and age all load negatively, while number of kids at home and number of kids driving load positively. This component seems to be representative of a person’s stage in life. Policy holders on the negative side of this component tend to be on the older side, have fewer kids at home, and are more financially established. On the other hand, policy holders on the positive side are more likely to be younger families who are less financially established and have more kids at home. In PC2, number of kids at home, kids driving, home value, bluebook value, and income load positively, while age loads negatively. This suggests thar PC2 captures a subset of policyholders that belong to younger, more affluent families.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot 2 - Scores of PC1 and PC2 by claim status</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">juice</span>(pca_prep) <span class="sc">|&gt;</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(train <span class="sc">|&gt;</span> <span class="fu">select</span>(CLM_FLAG)) <span class="sc">|&gt;</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">color =</span> CLM_FLAG)) <span class="sc">+</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PC1 vs PC2 by Claim Status"</span>,</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"PC1(23.8%)"</span>, <span class="at">y =</span> <span class="st">"PC2 (16.2%)"</span>, <span class="at">color =</span> <span class="st">"Claim Filed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">juice</span>(pca_prep) <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(train <span class="sc">|&gt;</span> <span class="fu">select</span>(CLM_FLAG)) <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">color =</span> CLM_FLAG)) <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PC1 vs PC2 by Claim Status"</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"PC1(23.8%)"</span>, <span class="at">y =</span> <span class="st">"PC2 (16.2%)"</span>, <span class="at">color =</span> <span class="st">"Claim Filed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Portfolio_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<p><img src="Portfolio_files/figure-html/Scores Plot-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Next is the scores plot that shows each policyholder on a plane defined by PC1 and PC2. Each point is colored based on whether or not that policyholder has made a claim. There is a lot of overlap between the two groups, however, there is tendency for policies that have filed claims to be more concentrated on the positive side of PC1. This is consistent with the notion that younger/lower income policy holders with children file claims at a higher rate.</p>

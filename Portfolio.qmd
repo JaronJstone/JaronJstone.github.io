@@ -94,6 +94,8 @@ ggplot(train, aes(x = AGE)) +
 The distribution of policyholder age is roughly bell-shaped and centered around the mid 40s. The youngest policy holders are 16 years old and the oldest are 80 years old, reflecting a realistic spread of policyholder ages.
 
 ```{r}
+#| label: Univariate MVR Points
+
 ggplot(train, aes(x = MVR_PTS)) +
   geom_histogram(binwidth = 1, fill = "blue", color = "white") +
   geom_vline(xintercept = 13, color = "red", linetype = "dashed", linewidth = 1) +
@@ -108,6 +110,7 @@ The distribution of vehicle record points is heavily right skewed with the major
 #### Bivariate Plots
 
 ```{r}
+#| label: Bivariate Age vs Claim rate
 ggplot(train, aes(x = AGE, fill = CLM_FLAG)) + 
   geom_density(alpha = 0.5) +
   labs(title = "Distribution of Age by Claim Status",
@@ -117,6 +120,7 @@ ggplot(train, aes(x = AGE, fill = CLM_FLAG)) +
 First, we examine the relationship between the policyholders age and claim rate. From this layered density plot that compares ages of policy holders who have filed a claim with those how have not, we can see that drivers who have filed a claim tend to skew younger. This could be due to younger drivers having less experience behind the wheel, thus resulting in an increased accident risk.
 
 ```{r}
+#| label: Bivariate Revoked Status vs Claim Rate
 # Claim Rate by Revoked Status
 
 train |>
@@ -135,6 +139,7 @@ train |>
 One of the strongest signals found in the data was the relationship between prior license revocation and claim rate. Drivers who have previously had their license revoked have a claim rate of 45%, which is nearly double the claim rate of 24% associated with drivers who have not had their license revoked before. This makes sense since a revoked license indicates serious driving violations, which is directly associated with higher accident risk.
 
 ```{r}
+#| label: Bivariate Claim rate vs MVR points 
 # Claim Rate by MVR Points
 
 ggplot(train, aes(x = CLM_FLAG, y = MVR_PTS, fill = CLM_FLAG)) +
@@ -147,6 +152,7 @@ ggplot(train, aes(x = CLM_FLAG, y = MVR_PTS, fill = CLM_FLAG)) +
 From this graph, it is clear that policyholders who have filed a claim have a noticeably higher average motor vehicle record points than those who did not. Motor vehicle Record points accumulate from driving violations such as tickets and accidents, making it a direct measure of a person's driving risk. This, along with revocation record, make it one of the clearest indicators of an individual's driving risk factor.
 
 ```{r}
+#| label: Bivariate Vehicle use vs. Claim rate
 # Claim Rate by Vehicle Use
 
 train |>
@@ -165,6 +171,7 @@ train |>
 Next we examine the claim rate of commercial verse private vehicles. Here we see that commercial vehicles have a claim rate of 35%, while privately owned vehicles have a claim rate of 22%. Commercial vehicles tend to be driven more frequently and often under rougher conditions, thereby having an increased exposure to accident risk when compared to privately owned vehicles.
 
 ```{r}
+#| label: Bivariate Claim rate vs Educational Level 
 #Claim rate By Education level
 
 educ_levels <- c("<High School", "High School", "Bachelors", "Masters", "PhD")
@@ -185,6 +192,7 @@ train |>
 Examining maximum education levels of policy holders, with the exception of those who did not graduate high school, their is a clear inverse relationship between claim rate and education level. We see those with a high school education have a claim rate of 34% while those with a PhD have a claim rate of 15%. This pattern is probably due to other characteristics that are associated with achieving high levels of education, rather than the education itself.
 
 ```{r}
+#| label: Bivariate Claim rate vs Car Type
 # Claim Rate by Car Type
 
 train |>
@@ -203,6 +211,7 @@ train |>
 Next, we examine the claim rate among different kinds of vehicles. Here, it is clear that sports cars and pickup trucks experience the highest claim rates at 34% and 32% respectively, while sedans have the lowest at 17%. Sports cars are likely associated with more aggressive/reckless driving and pickup trucks are more likely to be used as commercial vehicles, both of which are factors that are associated with an increased exposure to accident risk. On the other hand, sedans are often associated with more conservative everyday driving patterns, leading to lower accident rates.
 
 ```{r}
+#| label: Bivariate Claim rate vs Job Class
 # Claim Rate by Job Class
 
 train |>
@@ -243,7 +252,8 @@ tidy(pca_prep, number = 2, type = "variance")
 ```
 
 ```{r}
-#PLot 1 - Scree plot 
+#| label: Scree Plot
+
 tidy(pca_prep, number = 2, type = "variance") |>
   filter(terms == "percent variance") |>
   ggplot(aes(x = component, y = value)) +
@@ -255,6 +265,8 @@ tidy(pca_prep, number = 2, type = "variance") |>
 The Scree plot shows the percentage of variance explained by each principal component. PC1 explains 23.8% of the variance and PC2 explains 16.2% with a noticeable drop off in the following components. In the end, we select 5 principal components, which account for about 73% of the variance in the model. This cut off balances dimensionality reduction (9 variables to 5) while also keeping useful information about the data.
 
 ```{r}
+#| label: Loadings Plot
+
 tidy(pca_prep, number = 2) |>
   filter(component %in% c("PC1", "PC2")) |>
   ggplot(aes(x = reorder(terms, value), y = value, fill = value > 0)) +
@@ -269,7 +281,7 @@ tidy(pca_prep, number = 2) |>
 The loadings plot shows how much each variable contributes to each component. In PC1, home value, bluebook value, income, and age all load negatively, while number of kids at home and number of kids driving load positively. This component seems to be representative of a person's stage in life. Policy holders on the negative side of this component tend to be on the older side, have fewer kids at home, and are more financially established. On the other hand, policy holders on the positive side are more likely to be younger families who are less financially established and have more kids at home. In PC2, number of kids at home, kids driving, home value, bluebook value, and income load positively, while age loads negatively. This suggests thar PC2 captures a subset of policyholders that belong to younger, more affluent families.
 
 ```{r}
-#Plot 2 - Scores of PC1 and PC2 by claim status
+#| label: Scores Plot
 
 juice(pca_prep) |>
   bind_cols(train |> select(CLM_FLAG)) |>
