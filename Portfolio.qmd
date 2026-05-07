@@ -1,7 +1,7 @@
 ---
 title: "Portfolio Project"
 author: "Jaron Johnstone"
-format: pdf
+format: html
 editor: source
 ---
 
@@ -53,23 +53,11 @@ head(auto_claim)
 ```
 
 ```{r}
-#Checking proportion of policys with claims vs without claims 
-print("All data")
-prop.table(table(auto_claim$CLM_FLAG))
-
-
 #Stratified split to keep proportion of claim flags roughly equal between the two groups 
 set.seed(839)
 split <- initial_split(auto_claim, prop = 0.8, strata = CLM_FLAG)
 train <- training(split)
 test <- testing(split)
-
-#Checking if proportions are roughly even between the two groups 
-print("Training data")
-prop.table(table(train$CLM_FLAG))
-
-print("Test data")
-prop.table(table(test$CLM_FLAG))
 ```
 
 #### Description
