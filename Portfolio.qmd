@@ -1,8 +1,422 @@
 ---
 title: "Portfolio Project"
-editor: visual
+author: "Jaron Johnstone"
+format: pdf
+editor: source
 ---
 
+## Section 1: Data Description
+
 ```{r}
-print("hello world")
+#| label: load packages
+
+library(ggplot2)
+library(dplyr)
+library(tidymodels)
+library(glmnet)
+library(broom)
+library(tidyverse)
+library(rsample)
+library(naniar)
+library(softImpute)
+library(LearnPCA)
+library(readr)
+library(ExamPAData)
+library(randomForest)
 ```
+
+```{r}
+#| label: import data
+auto_claim <- readr::read_csv(here::here("auto_claim.csv"))
+
+### Imputing some missing data 
+auto_claim <- auto_claim |>
+  mutate(
+    YOJ = ifelse(is.na(YOJ), median(YOJ, na.rm = TRUE), YOJ),
+    INCOME = ifelse(is.na(INCOME), median(INCOME, na.rm = TRUE), INCOME),
+    HOME_VAL = ifelse(is.na(HOME_VAL), median(HOME_VAL, na.rm = TRUE), HOME_VAL),
+    SAMEHOME = ifelse(is.na(SAMEHOME), median(SAMEHOME, na.rm = TRUE), SAMEHOME)
+  )
+```
+
+```{r}
+#Convert Claim Flag to a factor variable 
+auto_claim <- auto_claim %>%
+  mutate(CLM_FLAG = as.factor(CLM_FLAG))
+
+#Peak in to data 
+head(auto_claim)
+```
+
+```{r}
+#Checking proportion of policys with claims vs without claims 
+print("All data")
+prop.table(table(auto_claim$CLM_FLAG))
+
+
+#Stratified split to keep proportion of claim flags roughly equal between the two groups 
+set.seed(839)
+split <- initial_split(auto_claim, prop = 0.8, strata = CLM_FLAG)
+train <- training(split)
+test <- testing(split)
+
+#Checking if proportions are roughly even between the two groups 
+print("Training data")
+prop.table(table(train$CLM_FLAG))
+
+print("Test data")
+prop.table(table(test$CLM_FLAG))
+```
+
+#### Description
+
+The auto_claim data set comes from the SOA's Predictive Analytics Exam practice materials, it contains 10296 observations and 29 variables. This data was collected in order to promote predictive analytics education within an actuarial context. Each observation is an individual auto insurance policy. Some of the variables include demographic information of the policy holder such as age, gender, income, and education. Other variables include characteristics about the vehicle such as car type, blue book value, and car use. The response variable that is being investigated in this analysis will be the CLM_FLAG variable which indicates whether or not a policy has made a claim. About 27% of policies have a claim, while 73% do not. We will be exploring which policy holder and vehicle characteristics are associated with a higher likelihood of filing a claim.
+
+Before splitting the data, missing values in INCOME, HOME_VAL, YOJ, and SAMEHOME were imputed using median imputation, preserving all 10296 observations. The data was then split in to a training set(80%, n = 8236) and a test set(20%, n = 2060). A stratified sample was used to ensure that the ratio of policies with claims vs policies with no claims were roughly equal between the two sets. The size of the each set is appropriate since there is ample data to train the models with while keeping enough data left over to test on.
+
+## Section 2: Data Wrangling and Exploratory Data Analysis
+
+The goal of this analysis is to identify which characteristics(either pertaining to the policyholder or their vehicle) are associated with a higher likelihood of making a claim. Other than a few missing data points, the data was largely clean and did not need any significant wrangling. This section will focus on the relationship between claim rate and key explanatory variables.
+
+#### Univariate Summaries
+
+```{r}
+train |>
+  select(AGE, INCOME, MVR_PTS, TRAVTIME, BLUEBOOK, HOME_VAL, KIDSDRIV) |>
+  summary()
+```
+
+#### Univariate Plots
+
+```{r}
+ggplot(train, aes(x = AGE)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "white") +
+  geom_vline(xintercept = 16, color = "red", linetype = "dashed", linewidth = 1) +
+  geom_vline(xintercept = 80, color = "red", linetype = "dashed", linewidth = 1) +
+  labs(title = "Distribution of PolicyHolder Age", 
+       x= "Age", y = "Count")
+```
+
+The distribution of policyholder age is roughly bell-shaped and centered around the mid 40s. The youngest policy holders are 16 years old and the oldest are 80 years old, reflecting a realistic spread of policyholder ages.
+
+```{r}
+ggplot(train, aes(x = MVR_PTS)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "white") +
+  geom_vline(xintercept = 13, color = "red", linetype = "dashed", linewidth = 1) +
+  labs(title = "Distribution of Motor Vehicle Record Points", 
+       x= "MVR Points", y = "Count",
+       caption = "Red dashed line indicates maximum value fo 13 points")
+
+```
+
+The distribution of vehicle record points is heavily right skewed with the majority of policyholders having 0 or 1 point, but a small number of drivers having as many as 13 points on their record(indicated by red line on the graph since it wasn't visible). This kind of distribution is typical with risk related variables where the majority of the data is low risk while a small amount of the data is high risk.
+
+#### Bivariate Plots
+
+```{r}
+ggplot(train, aes(x = AGE, fill = CLM_FLAG)) + 
+  geom_density(alpha = 0.5) +
+  labs(title = "Distribution of Age by Claim Status",
+       x = "Age", y = "Density", fill = "Claim Filed")
+```
+
+First, we examine the relationship between the policyholders age and claim rate. From this layered density plot that compares ages of policy holders who have filed a claim with those how have not, we can see that drivers who have filed a claim tend to skew younger. This could be due to younger drivers having less experience behind the wheel, thus resulting in an increased accident risk.
+
+```{r}
+# Claim Rate by Revoked Status
+
+train |>
+  count(REVOLKED, CLM_FLAG) |>
+  group_by(REVOLKED) |>
+  mutate(percentage = n/sum(n)) |>
+  filter(CLM_FLAG == "Yes") |>
+  ggplot(aes(x = REVOLKED, y = percentage, fill == REVOLKED)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Claim Rate by License Revocation Status", 
+       x = "License Revoked", y = "Claim Rate") +
+  theme(legend.position = "none")
+```
+
+One of the strongest signals found in the data was the relationship between prior license revocation and claim rate. Drivers who have previously had their license revoked have a claim rate of 45%, which is nearly double the claim rate of 24% associated with drivers who have not had their license revoked before. This makes sense since a revoked license indicates serious driving violations, which is directly associated with higher accident risk.
+
+```{r}
+# Claim Rate by MVR Points
+
+ggplot(train, aes(x = CLM_FLAG, y = MVR_PTS, fill = CLM_FLAG)) +
+  geom_boxplot() +
+  labs(title = "Motor Vehicle Record Points by Claim Status",
+       x = "Claim Filed", y = "MVR Points") +
+  theme(legend.position = "none")
+```
+
+From this graph, it is clear that policyholders who have filed a claim have a noticeably higher average motor vehicle record points than those who did not. Motor vehicle Record points accumulate from driving violations such as tickets and accidents, making it a direct measure of a person's driving risk. This, along with revocation record, make it one of the clearest indicators of an individual's driving risk factor.
+
+```{r}
+# Claim Rate by Vehicle Use
+
+train |>
+  count(CAR_USE, CLM_FLAG) |>
+  group_by(CAR_USE) |>
+  mutate(percentage = n/sum(n)) |>
+  filter(CLM_FLAG == "Yes") |>
+  ggplot(aes(x = CAR_USE, y = percentage, fill == CAR_USE)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Claim Rate by Car Use", 
+       x = "Car Use", y = "Claim Rate") +
+  theme(legend.position = "none")
+```
+
+Next we examine the claim rate of commercial verse private vehicles. Here we see that commercial vehicles have a claim rate of 35%, while privately owned vehicles have a claim rate of 22%. Commercial vehicles tend to be driven more frequently and often under rougher conditions, thereby having an increased exposure to accident risk when compared to privately owned vehicles.
+
+```{r}
+#Claim rate By Education level
+
+educ_levels <- c("<High School", "High School", "Bachelors", "Masters", "PhD")
+train |>
+  count(MAX_EDUC, CLM_FLAG) |>
+  group_by(MAX_EDUC) |>
+  mutate(percentage = n/sum(n)) |>
+  filter(CLM_FLAG == "Yes") |>
+  mutate(MAX_EDUC = factor(MAX_EDUC, levels = educ_levels)) |>
+  ggplot(aes(x = MAX_EDUC, y = percentage, fill == MAX_EDUC)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Claim Rate by Education Level", 
+       x = "Education level", y = "Claim Rate") +
+  theme(legend.position = "none")
+```
+
+Examining maximum education levels of policy holders, with the exception of those who did not graduate high school, their is a clear inverse relationship between claim rate and education level. We see those with a high school education have a claim rate of 34% while those with a PhD have a claim rate of 15%. This pattern is probably due to other characteristics that are associated with achieving high levels of education, rather than the education itself.
+
+```{r}
+# Claim Rate by Car Type
+
+train |>
+  count(CAR_TYPE, CLM_FLAG) |>
+  group_by(CAR_TYPE) |>
+  mutate(percentage = n/sum(n)) |>
+  filter(CLM_FLAG == "Yes") |>
+  ggplot(aes(x = CAR_TYPE, y = percentage, fill == CAR_TYPE)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Claim Rate by Car Type", 
+       x = "Car Type", y = "Claim Rate") +
+  theme(legend.position = "none")
+```
+
+Next, we examine the claim rate among different kinds of vehicles. Here, it is clear that sports cars and pickup trucks experience the highest claim rates at 34% and 32% respectively, while sedans have the lowest at 17%. Sports cars are likely associated with more aggressive/reckless driving and pickup trucks are more likely to be used as commercial vehicles, both of which are factors that are associated with an increased exposure to accident risk. On the other hand, sedans are often associated with more conservative everyday driving patterns, leading to lower accident rates.
+
+```{r}
+# Claim Rate by Job Class
+
+train |>
+  count(JOBCLASS, CLM_FLAG) |>
+  group_by(JOBCLASS) |>
+  mutate(percentage = n/sum(n)) |>
+  filter(CLM_FLAG == "Yes") |>
+  ggplot(aes(x = JOBCLASS, y = percentage, fill == JOBCLASS)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Claim Rate by Job Class", 
+       x = "Job Class", y = "Claim Rate") +
+  theme(legend.position = "none")
+```
+
+Finally, looking at the claim rates among job classes, we find there is quite a bit of variance between each group. This is consistent with the idea that someone's job influences their driving patterns. For example, we see doctors have the lowest rate at 11%, while students have the highest rate at 38%. This could be due to the fact that doctors may be more risk adverse, resulting in a decreased likelihood of causing a car accident. Conversely, students are usually younger which means they have less experience driving, leading to an increased likelihood of causing a car accident.
+
+## Section 3: Unsupervised Learning
+
+Principal Component Analysis is a technique that aims to reduce the dimensionality of a large set of correlated variables in to a smaller set of uncorrelated variables called principal components. Each component is a linear combination of the original variables constructed in such a way that captures as much variation in the data as possible. The first component explains the most variation, the second component explains the second most variance, and so on. In this analysis, PCA was performed on 9 numeric variables from the set: AGE, INCOME, HOME_VAL, BLUEBOOK, TRAVTIME, MVR_PTS, NPOLICY, HOMEKIDS, and KIDSDRIV. All variables were standardized to ensure they contribute equally to the analysis.
+
+```{r}
+#Selecting numeric predictors only
+pca_recipe <- recipe(
+  ~ KIDSDRIV + TRAVTIME + BLUEBOOK + NPOLICY + MVR_PTS + AGE + HOMEKIDS + INCOME + HOME_VAL, 
+  data = train) |>
+  step_normalize(all_numeric_predictors()) |>
+  step_pca(all_predictors())
+
+#prep
+pca_prep <- prep(pca_recipe)
+
+#results
+tidy(pca_prep, number = 2)
+
+#Variance explained 
+tidy(pca_prep, number = 2, type = "variance")
+```
+
+```{r}
+#PLot 1 - Scree plot 
+tidy(pca_prep, number = 2, type = "variance") |>
+  filter(terms == "percent variance") |>
+  ggplot(aes(x = component, y = value)) +
+  geom_col(fill = "darkgrey") +
+  labs(title = "Scree Plot - Variance Explained by each Principal Component",
+       x = "Principal Component", y = "Precent Variance Explained")
+```
+
+The Scree plot shows the percentage of variance explained by each principal component. PC1 explains 23.8% of the variance and PC2 explains 16.2% with a noticeable drop off in the following components. In the end, we select 5 principal components, which account for about 73% of the variance in the model. This cut off balances dimensionality reduction (9 variables to 5) while also keeping useful information about the data.
+
+```{r}
+tidy(pca_prep, number = 2) |>
+  filter(component %in% c("PC1", "PC2")) |>
+  ggplot(aes(x = reorder(terms, value), y = value, fill = value > 0)) +
+  geom_col()+
+  facet_wrap(~ component) +
+  coord_flip() +
+  labs(title = "PCA Loadings for PC1 and PC2",
+       x = "Variable", y = "Loading") +
+  theme(legend.position = "none")
+```
+
+The loadings plot shows how much each variable contributes to each component. In PC1, home value, bluebook value, income, and age all load negatively, while number of kids at home and number of kids driving load positively. This component seems to be representative of a person's stage in life. Policy holders on the negative side of this component tend to be on the older side, have fewer kids at home, and are more financially established. On the other hand, policy holders on the positive side are more likely to be younger families who are less financially established and have more kids at home. In PC2, number of kids at home, kids driving, home value, bluebook value, and income load positively, while age loads negatively. This suggests thar PC2 captures a subset of policyholders that belong to younger, more affluent families.
+
+```{r}
+#Plot 2 - Scores of PC1 and PC2 by claim status
+
+juice(pca_prep) |>
+  bind_cols(train |> select(CLM_FLAG)) |>
+  ggplot(aes(x = PC1, y = PC2, color = CLM_FLAG)) +
+  geom_point(alpha = 0.3) +
+  labs(title = "PC1 vs PC2 by Claim Status",
+       x = "PC1(23.8%)", y = "PC2 (16.2%)", color = "Claim Filed")
+```
+
+Next is the scores plot that shows each policyholder on a plane defined by PC1 and PC2. Each point is colored based on whether or not that policyholder has made a claim. There is a lot of overlap between the two groups, however, there is tendency for policies that have filed claims to be more concentrated on the positive side of PC1. This is consistent with the notion that younger/lower income policy holders with children file claims at a higher rate.
+
+Here, the primary benefit of PCA is understanding the hidden structures within the predictor variables, rather than trying to directly predict outcomes.
+
+## Section 4: Supervised Learning
+
+Two Classification models were used to predict whether a policyholder would file a claim. The first model was a logistic regression model with lasso regularization and the second model was a random forest. 5-fold cross validation was used to tune the hyperparameters.
+
+```{r}
+### convert character variables to factors 
+
+factors <- c("CAR_USE", "CAR_TYPE", "RED_CAR", "REVOLKED", "GENDER", "MARRIED", "PARENT1", "JOBCLASS", "MAX_EDUC", "AREA")
+
+train <- train |> mutate(across(all_of(factors), as.factor))
+test <- test |> mutate(across(all_of(factors), as.factor))
+```
+
+```{r}
+#Recipe
+model_recipe <- recipe(CLM_FLAG ~ KIDSDRIV + TRAVTIME + BLUEBOOK + NPOLICY + MVR_PTS + AGE + HOMEKIDS + INCOME + HOME_VAL + YOJ + SAMEHOME + CAR_USE + CAR_TYPE + RED_CAR + REVOLKED + GENDER + MARRIED + PARENT1 + JOBCLASS + MAX_EDUC + AREA, data = train) |>
+  step_dummy(all_nominal_predictors()) |>
+  step_normalize(all_numeric_predictors())
+
+#5 - fold Validation
+set.seed(839)
+cv_folds <- vfold_cv(train, v = 5, strata = CLM_FLAG)
+```
+
+#### Logistic Regression
+
+```{r}
+#logistic regression model 
+log_reg_model <- logistic_reg(penalty = tune(), mixture = 1) |>
+  set_engine("glmnet") |>
+  set_mode("classification")
+
+#work flow
+log_wflow <- workflow() |>
+  add_recipe(model_recipe) |>
+  add_model(log_reg_model)
+
+log_reg_grid <- grid_regular(penalty(), levels = 20)
+
+set.seed(839)
+
+log_reg_tune <- tune_grid(
+  log_wflow,
+  resamples = cv_folds,
+  grid = log_reg_grid,
+  metrics = metric_set(accuracy)
+)
+
+show_best(log_reg_tune, metric = "accuracy")
+```
+
+```{r}
+#best penalty
+best_penalty <- select_best(log_reg_tune, metric = "accuracy")
+
+#finalzing workflow
+log_reg_final <- log_wflow |>
+  finalize_workflow(best_penalty)
+
+#fit in training data
+log_reg_fit <- log_reg_final |>
+  fit(data = train)
+
+#Predicting in test data
+log_reg_results <- log_reg_fit |>
+  predict(test) |>
+  bind_cols(test |> select(CLM_FLAG)) |>
+  metrics(truth = CLM_FLAG, estimate = .pred_class)
+
+log_reg_results
+```
+
+Logistic regression is extension linear regression, however it is used to predict binary outcomes rather than numeric values. In this case, it predicts the probability of policyholder falling in to one of two classes, that being whether a claim was filed or not. If the predicted probability of filing a claim exceeds 50%, then the policyholder is classified as Yes, if not, they are classified as No.
+
+Lasso regularization was used to automatically penalize unimportant predictors in the model. This method simplifies the model while also preventing over fitting on the training data. The penalty in this case is referred to as 'lambda'. The higher lambda is, the higher the penalization is on the predictor variables, which results in a simpler model that may miss more patterns(more bias). A lower lambda fits the model more closely to the training data, but could result in over fitting(more variance). Higher variance means the model is more sensitive to changes in the training data, which could lead to model making poor predictions when presented with new data.The optimal lambda selected was 0.00234, this is a relatively small value which indicates that most of the predictors were useful.
+
+The logistic regression achieved a mean cross validation accuracy of 78.5% (std error: 0.23%) and a test set accuracy of 79.1% \#### Random Forest
+
+```{r}
+#Forest model
+rf_model <- rand_forest(mtry = tune(), trees = 100) |>
+  set_engine("randomForest") |>
+  set_mode("classification")
+
+#workflow
+rf_wflow <- workflow() |>
+  add_recipe(model_recipe) |>
+  add_model(rf_model)
+
+#tunring grid 
+rf_grid <- grid_regular(mtry(range = c(2, 10)), levels = 3)
+
+#Tuning 
+set.seed(839)
+rf_tune <- tune_grid(
+  rf_wflow,
+  resamples = cv_folds,
+  grid = rf_grid
+)
+```
+
+```{r}
+show_best(rf_tune, metric = "accuracy")
+```
+
+```{r}
+#best mtry
+best_mtry <- select_best(rf_tune, metric = "accuracy")
+
+#finalzing workflow
+rf_final <- rf_wflow |>
+  finalize_workflow(best_mtry)
+
+#fit in training data
+rf_fit <- rf_final |>
+  fit(data = train)
+
+#Predicting in test data
+rf_results <- rf_fit |>
+  predict(test) |>
+  bind_cols(test |> select(CLM_FLAG)) |>
+  metrics(truth = CLM_FLAG, estimate = .pred_class)
+
+rf_results
+```
+
+In a random forest model, many decision trees are trained on a slightly different random sample(with replacement) of the data. At every split in a tree, it only considers a subset of predictors rather than all of them. Each tree then makes a prediction on a new data point. The prediction that receives the most 'votes' becomes the final prediction.
+
+The Random Forest achieved a mean cross validation accuracy of 78.3% (std error: 0.27%) and a test set accuracy of 78.1%
+
+Both models performed similarly, suggesting a straightforward relationship between claim status and the predictors. Additionally, the fact that the mean cross-validation accuracy and test accuracy were very close for both models suggests that neither model is over fitting the training data.
