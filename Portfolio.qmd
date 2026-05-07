@@ -8,7 +8,9 @@ editor: source
 ## Section 1: Data Description
 
 ```{r}
-#| label: load packages
+#| label: load packages 
+#| warning: FALSE
+#| message: FALSE
 
 library(ggplot2)
 library(dplyr)
@@ -27,6 +29,8 @@ library(randomForest)
 
 ```{r}
 #| label: import data
+#| warning: FALSE
+#| message: FALSE
 auto_claim <- readr::read_csv(here::here("auto_claim.csv"))
 
 ### Imputing some missing data 
