@@ -5,6 +5,10 @@ format: html
 editor: source
 ---
 
+This project uses the auto_claim dataset, drawn from the Society of Actuaries' Exam PA practice materials, to explore which policyholder and vehicle characteristics are associated with a higher likelihood of filing an auto insurance claim. The analysis begins with exploratory data analysis, examining how factors such as driving history, vehicle type, age, and education level relate to claim rates. Principal component analysis is then used to investigate the underlying structure of the numeric predictor variables, summarizing the key ways policy holders differ from each other in terms of wealth, age, driving behavior, and family structure. Finally, two supervised classification models, a logistic regression with lasso regularization and a random forest are fit. The two models are evaluated using cross-validation and test set accuracy, with further discussion of how the classification threshold can be adjusted to better serve the needs of an insurance company. 
+
+Setting premium rates for auto insurance is one of the most fundamental responsibilities of an actuary. However, it is not as simple as estimating the total cost of claims over a given period and charging everyone the same rate to cover that cost. Auto insurers must set premiums that reflect individual policyholder risk in order to remain competitive. And insurer charging too little for high risk policies leads to financial losses, while charging too much for low risk policies drives customers to competitors. This dataset was chosen for its direct relevance to a future career in actuarial science, and the broader goal of this project is to explore how policyholder data can be used to build models that better understand and quantify individual risk.
+
 ## Section 1: Data Description
 
 ```{r}
